@@ -100,6 +100,8 @@ const Header = () => {
     }
   }, [ethProvider, web3])
 
+  // test
+
   useEffect(() => {
     if (klaytnProvider && caver) {
       klaytnProvider.on('networkChanged', function () {
