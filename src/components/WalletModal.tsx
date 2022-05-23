@@ -1,4 +1,4 @@
-import { Fragment, useEffect } from 'react'
+import { Fragment, useEffect, useState } from 'react'
 import { Dialog, Transition } from '@headlessui/react'
 import Image from 'next/image'
 import metamask from '../public/metamask.png'
@@ -27,10 +27,13 @@ const WalletModal = (props: ModalProps) => {
     setCurrentWallet,
   } = useContext(providerContext)
 
+  const [currentAddress, setCurrentAddress] = useState();
+
   const connectKaikas = async () => {
     try {
       const accounts = await klaytnProvider.enable()
       setKaikasAddress(accounts[0])
+      setCurrentAddress(accounts[0])
       const caver = new Caver(klaytnProvider)
       setCaver(caver)
       props.setWalletModal(false)
@@ -78,6 +81,14 @@ const WalletModal = (props: ModalProps) => {
       toast.error(error.message, { theme: 'colored' })
     }
   }
+
+  useEffect(() => {
+    //setCurrentAddress(JSON.parse(window.localStorage.getItem('SelectedAccount')));
+  }, []); 
+
+  useEffect(() => {
+    window.localStorage.setItem('SelectedAccount', JSON.stringify(currentAddress));
+  }, [currentAddress]);   
 
   return (
     <>
