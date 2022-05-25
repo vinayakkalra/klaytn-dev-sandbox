@@ -8,6 +8,8 @@ import { shortenAddress, shortenBalance } from '../helpers'
 import Subheader from './Subheader'
 import brandImg from '../public/brandmark.svg'
 import { toast } from 'react-toastify'
+import { injected } from "../components/wallet/connectors"
+import { useWeb3React } from "@web3-react/core"
 
 const Header = () => {
   const {
@@ -24,6 +26,7 @@ const Header = () => {
   const [metamaskBalance, setMetamaskBalace] = useState<string>()
   const [kaikasBalance, setKaikasBalance] = useState<any>()
   const [metamaskConnected, setMetamaskConnected] = useState<boolean>(false)
+  const { active, account, library, connector, activate, deactivate } = useWeb3React()
 
   const detectKaikasNetwork = () => {
     if (klaytnProvider) {
@@ -79,6 +82,29 @@ const Header = () => {
     }
   }
 
+  const connect = async () => {
+    try {
+      await activate(injected)
+      window.localStorage.setItem('isWalletConnected', JSON.stringify(true))
+      console.log('CONNECTING', localStorage.getItem('isWalletConnected'))
+    } catch (ex) {
+      console.log(ex)
+    }
+  }
+
+  const disconnect = async () => {
+    try {
+      await activate(injected)
+      window.localStorage.setItem('isWalletConnected', JSON.stringify(false))
+    } catch (ex) {
+      console.log(ex)
+    }
+  }
+
+  const onConnectWallet = () => {
+    
+  }
+
   useEffect(() => {
     if (metamaskCaver) {
       getMetamaskCaverBalance()
@@ -108,6 +134,21 @@ const Header = () => {
       getKaikasBalance()
     }
   }, [klaytnProvider, caver])
+
+  useEffect(() => {
+    const connectWalletOnPageLoad = async () => {
+      if (window.localStorage?.getItem('isWalletConnected') === 'true') {
+        try {
+          await activate(injected)
+          window.localStorage.setItem('isWalletConnected', JSON.stringify(true))
+        } catch (ex) {
+          console.log(ex)
+        }
+      }
+    }
+    connectWalletOnPageLoad()
+  }, [])
+
 
   return (
     <header className="grid grid-rows-2 font-light">
@@ -166,7 +207,7 @@ const Header = () => {
               {!metamaskAddress && !kaikasAddress && (
                 <button
                   className="border rounded-full px-4 py-2 border-grey bg-white font-light"
-                  onClick={() => setWalletModal(true)}
+                  onClick={() => {setWalletModal(true); connect();}}
                 >
                   Connect
                 </button>

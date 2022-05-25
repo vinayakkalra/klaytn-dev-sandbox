@@ -32,8 +32,7 @@ const WalletModal = (props: ModalProps) => {
   const connectKaikas = async () => {
     try {
       const accounts = await klaytnProvider.enable()
-      setKaikasAddress(accounts[0])
-      setCurrentAddress(accounts[0])
+      setKaikasAddress(accounts[0])      
       const caver = new Caver(klaytnProvider)
       setCaver(caver)
       props.setWalletModal(false)
@@ -41,6 +40,7 @@ const WalletModal = (props: ModalProps) => {
       const networkId = klaytnProvider.networkVersion
       klaytnProvider.on('accountsChanged', () => {
         setKaikasAddress(klaytnProvider.selectedAddress)
+        setCurrentAddress(klaytnProvider.selectedAddress)
        })
       if (networkId !== 1001) {
         toast.error('Please connect to the Baobab Testnet to use this sandbox', {
@@ -83,7 +83,12 @@ const WalletModal = (props: ModalProps) => {
   }
 
   useEffect(() => {
-    //setCurrentAddress(JSON.parse(window.localStorage.getItem('SelectedAccount')));
+    try {
+      const data = window.localStorage.getItem('SelectedAccount');
+      if (data !== null) setCurrentAddress(JSON.parse(data));
+    } catch (err) {
+      console.log('Error: ', err.message);
+    }    
   }, []); 
 
   useEffect(() => {

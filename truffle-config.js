@@ -81,7 +81,7 @@ module.exports = {
     },
     kasBaobab: {
       provider: () => {
-        fileExists()
+        //fileExists()
         const option = {
           headers: [
             { name: 'Authorization', value: 'Basic ' + Buffer.from(accessKeyId + ':' + secretAccessKey).toString('base64') },
@@ -93,7 +93,7 @@ module.exports = {
       },
       network_id: '1001', //Klaytn baobab testnet's network id
       gas: '8500000',
-      gasPrice:'750000000000'
+      gasPrice:'250000000000'
     },
     kasCypress: {
       provider: () => {
