@@ -9,6 +9,8 @@ import { toast } from 'react-toastify'
 import Web3 from 'web3'
 import Caver from 'caver-js'
 import 'react-toastify/dist/ReactToastify.css'
+import { useWeb3React } from "@web3-react/core"
+import { injected } from "../components/wallet/connectors"
 
 interface ModalProps {
   walletModal: boolean
@@ -25,9 +27,29 @@ const WalletModal = (props: ModalProps) => {
     setWeb3,
     setCaver,
     setCurrentWallet,
+    setMetamaskConnected,
   } = useContext(providerContext)
 
   const [currentAddress, setCurrentAddress] = useState();
+  const { active, account, library, connector, activate, deactivate } = useWeb3React()
+
+  async function connect() {
+    try {
+      await activate(injected)
+      window.localStorage.setItem('isMetamaskConnected', JSON.stringify(true))
+    } catch (ex) {
+      console.log(ex)
+    }
+  }
+
+  async function disconnect() {
+    try {
+      deactivate()
+      window.localStorage.setItem('isMetamaskConnected', JSON.stringify(false))
+    } catch (ex) {
+      console.log(ex)
+    }
+  }
 
   const connectKaikas = async () => {
     try {
@@ -36,12 +58,14 @@ const WalletModal = (props: ModalProps) => {
       const caver = new Caver(klaytnProvider)
       setCaver(caver)
       props.setWalletModal(false)
-      setCurrentWallet('Kaikas')
+      setCurrentWallet('Kaikas')      
       const networkId = klaytnProvider.networkVersion
       klaytnProvider.on('accountsChanged', () => {
         setKaikasAddress(klaytnProvider.selectedAddress)
         setCurrentAddress(klaytnProvider.selectedAddress)
        })
+      window.localStorage.setItem('isWalletConnected', JSON.stringify(true))
+      window.localStorage.setItem('SelectedAccount', JSON.stringify(klaytnProvider.selectedAddress))
       if (networkId !== 1001) {
         toast.error('Please connect to the Baobab Testnet to use this sandbox', {
           theme: 'colored',
@@ -68,6 +92,8 @@ const WalletModal = (props: ModalProps) => {
       ethProvider.on('accountsChanged', () => {
         setMetamaskAddress(ethProvider.selectedAddress)
        })
+      window.localStorage.setItem('isMetamaskConnected', JSON.stringify(true))
+      setMetamaskCo(true)
       if (networkId !== '1001') {
         toast.error('Please connect to the Baobab Testnet to use this sandbox', {
           theme: 'colored',
@@ -82,6 +108,17 @@ const WalletModal = (props: ModalProps) => {
     }
   }
 
+  // useEffect(() => {
+  //   if (window.localStorage.getItem('isWalletConnected') === 'true') {
+  //     try {
+  //       connectKaikas()
+  //     } catch (err) {
+  //       console.log('Error: ', err.message);
+  //     } 
+  //   }
+  //   connectKaikas()
+  // }, []); 
+
   useEffect(() => {
     try {
       const data = window.localStorage.getItem('SelectedAccount');
@@ -94,6 +131,20 @@ const WalletModal = (props: ModalProps) => {
   useEffect(() => {
     window.localStorage.setItem('SelectedAccount', JSON.stringify(currentAddress));
   }, [currentAddress]);   
+
+  useEffect(() => {
+    const connectWalletOnPageLoad = async () => {
+      if (window.localStorage.getItem('isMetamaskConnected') === 'true') {
+        try {
+          await activate(injected)
+          window.localStorage.setItem('isMetamaskConnected', JSON.stringify(true))
+        } catch (ex) {
+          console.log(ex)
+        }
+      }
+    }
+    connectWalletOnPageLoad()
+  }, [])
 
   return (
     <>

@@ -21,12 +21,16 @@ const Header = () => {
     kaikasAddress,
     currentWallet,
     metamaskCaver,
+    metamaskCo
   } = useContext(providerContext)
   const [walletModal, setWalletModal] = useState<boolean>(false)
   const [metamaskBalance, setMetamaskBalace] = useState<string>()
   const [kaikasBalance, setKaikasBalance] = useState<any>()
   const [metamaskConnected, setMetamaskConnected] = useState<boolean>(false)
+  const [walletConnected, setWalletConnected] = useState<boolean>(false)
   const { active, account, library, connector, activate, deactivate } = useWeb3React()
+
+  console.log("WALLET CONNECTED", walletConnected)
 
   const detectKaikasNetwork = () => {
     if (klaytnProvider) {
@@ -82,27 +86,14 @@ const Header = () => {
     }
   }
 
-  const connect = async () => {
-    try {
-      await activate(injected)
-      window.localStorage.setItem('isWalletConnected', JSON.stringify(true))
-      console.log('CONNECTING', localStorage.getItem('isWalletConnected'))
-    } catch (ex) {
-      console.log(ex)
-    }
-  }
-
   const disconnect = async () => {
     try {
-      await activate(injected)
+      //await activate(injected)
       window.localStorage.setItem('isWalletConnected', JSON.stringify(false))
+      setWalletConnected(false)
     } catch (ex) {
       console.log(ex)
     }
-  }
-
-  const onConnectWallet = () => {
-    
   }
 
   useEffect(() => {
@@ -136,20 +127,33 @@ const Header = () => {
   }, [klaytnProvider, caver])
 
   useEffect(() => {
-    const connectWalletOnPageLoad = async () => {
-      if (window.localStorage?.getItem('isWalletConnected') === 'true') {
-        try {
-          await activate(injected)
-          window.localStorage.setItem('isWalletConnected', JSON.stringify(true))
-        } catch (ex) {
-          console.log(ex)
-        }
-      }
-    }
-    connectWalletOnPageLoad()
-  }, [])
+    try {
+      const data = window.localStorage.getItem('isWalletConnected');
+      if (data !== null) setWalletConnected(JSON.parse(data));
+    } catch (err) {
+      console.log('Error: ', err.message);
+    }    
+  }, []);
 
+  useEffect(() => {
+    window.localStorage.setItem('isWalletConnected', JSON.stringify(walletConnected));
+  }, [walletConnected]);
 
+  // useEffect(() => {
+  //   const connectWalletOnPageLoad = async () => {
+  //     if (window.localStorage.getItem('isWalletConnected') === 'true') {
+  //       try {
+  //         //await activate(injected)
+  //         window.localStorage.setItem('isWalletConnected', JSON.stringify(true))
+  //         setWalletConnected(true)
+  //       } catch (ex) {
+  //         console.log(ex)
+  //       }
+  //     }
+  //   }
+  //   connectWalletOnPageLoad()
+  // }, [])
+ 
   return (
     <header className="grid grid-rows-2 font-light">
       <div className="flex place-content-between p-3 items-center text-gray-900 bg-gray-100">
@@ -172,7 +176,7 @@ const Header = () => {
               KLAY
             </div>
             <li className="mx-6">
-              {kaikasAddress && (
+              {kaikasAddress && walletConnected && (
                 <button
                   className="flex items-center text-gray-600 font-light space-x-4 active:text-emerald-400"
                   onClick={() => {
@@ -204,20 +208,26 @@ const Header = () => {
                   />
                 </button>
               )}
-              {!metamaskAddress && !kaikasAddress && (
+              {!metamaskAddress && !kaikasAddress && !walletConnected &&(
                 <button
                   className="border rounded-full px-4 py-2 border-grey bg-white font-light"
-                  onClick={() => {setWalletModal(true); connect();}}
+                  onClick={() => setWalletModal(true)}
                 >
                   Connect
                 </button>
-              )}
-            </li>
-          </div>
-        </ul>
+              )}             
+          <button
+            className="border rounded-full px-1 py-1 border-grey bg-white font-light"
+            onClick={() => disconnect()}
+            > ❌ 
+          </button>           
+            </li>            
+          </div>          
+        </ul>        
       </div>
       <Subheader />
     </header>
+    
   )
 }
 

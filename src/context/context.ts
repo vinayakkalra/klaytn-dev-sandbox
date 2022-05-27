@@ -9,6 +9,7 @@ interface context {
   caver: any
   currentWallet: any
   metamaskCaver: any
+  metamaskCo: any
   setKlaytnProvider: (a: any) => void
   setEthProvider: (a: any) => void
   setMetamaskAddress: (a: any) => void
@@ -17,6 +18,7 @@ interface context {
   setCaver: (a: any) => void
   setCurrentWallet: (a: any) => void
   setMetamaskCaver: (a: any) => void
+  setMetamaskCo: (a: any) => void
 }
 
 const contextDefaultValue = {
@@ -28,6 +30,7 @@ const contextDefaultValue = {
   caver: null,
   currentWallet: null,
   metamaskCaver: null,
+  metamaskCo: null,
   setKlaytnProvider: (a: any) => null,
   setEthProvider: (a: any) => null,
   setMetamaskAddress: (a: any) => null,
@@ -35,8 +38,8 @@ const contextDefaultValue = {
   setWeb3: (a: any) => null,
   setCaver: (a: any) => null,
   setCurrentWallet: (a: any) => null,
-  setMetamaskCaver: (a: any) => null
-
+  setMetamaskCaver: (a: any) => null,
+  setMetamaskCo: (a: any) => null
 }
 
 const context = createContext<context>(contextDefaultValue)
