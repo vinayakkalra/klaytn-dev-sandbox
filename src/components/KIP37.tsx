@@ -1,7 +1,9 @@
 import { useForm } from 'react-hook-form'
-import { useState, useContext } from 'react'
+import { useState, useContext, useEffect } from 'react'
 import providerContext from '../context/context'
 import Spinner from '../components/Spinner'
+import { toast } from 'react-toastify'
+import 'react-toastify/dist/ReactToastify.css'
 
 const ipfsConn = {
   host: 'ipfs.infura.io',
@@ -37,6 +39,7 @@ const KIP37 = ({ kip37 }: props) => {
   }
 
   const mintToken = async () => {
+    const id = toast.loading('Minting Tokens....', { theme: 'colored' })
     if (!kip37) {
       alert('Please connect your Kaikas wallet')
     } else {
@@ -55,10 +58,25 @@ const KIP37 = ({ kip37 }: props) => {
 
       const uri = `https://ipfs.infura.io/ipfs/${cid}`
       console.log('token URI: ', uri)
-      const mintTxn = await kip37.methods
+      try {
+        const mintTxn = await kip37.methods
         .mintToken(uri, quantity)
         .send({ from: kaikasAddress, gas: '0xF4240' })
       console.log('mint txn: ', mintTxn)
+      toast.update(id, {
+        render: 'Token(s) successfully minted',
+        type: 'success',
+        autoClose: 3000,
+        isLoading: false,
+      })
+      } catch (err:any) {
+        toast.update(id, {
+          render: err.message,
+          type: 'error',
+          autoClose: 3000,
+          isLoading: false,
+        })
+      }      
     }
   }
 
@@ -88,6 +106,14 @@ const KIP37 = ({ kip37 }: props) => {
       console.error('Error uploading file: ', e)
     }
   }
+
+  const deleteMedia = () => {   
+    setImageURL('')
+  }
+
+  useEffect(() => {
+    
+  }, [imageURL])
 
   return (
     <div className="flex justify-center">
@@ -168,6 +194,14 @@ const KIP37 = ({ kip37 }: props) => {
             onClick={handleSubmit(mintToken)}
           >
             MINT KIP37 TOKEN
+          </button>
+          <button
+            className="bg-magma text-white tracking-widest font-header mx-3 py-2 px-8 rounded-full hover:bg-grey-400 "
+            onClick={(deleteMedia)}
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
+            <path strokeLinecap="round" strokeLinejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+            </svg>            
           </button>
         </div>
       </div>

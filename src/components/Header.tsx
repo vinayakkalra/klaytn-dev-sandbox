@@ -124,7 +124,7 @@ const Header = () => {
       })
       getKaikasBalance()
     }
-  }, [klaytnProvider, caver])
+  }, [klaytnProvider, caver, kaikasAddress])
 
   useEffect(() => {
     try {
