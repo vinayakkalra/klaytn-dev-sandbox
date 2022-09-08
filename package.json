@@ -31,6 +31,7 @@
     "deploy:baobab:kip17": "truffle migrate --f 3 --to 3 --network baobab",
     "deploy:baobab:kip37": "truffle migrate --f 4 --to 4 --network baobab",
     "deploy:baobab:simplestorage": "truffle migrate --f 2 --to 2 --network baobab --reset",
+    "deploy:baobab:airdrop": "truffle migrate --f 3 --to 3 --network baobab --reset",
     "deploy:kasBaobab:kip7": "truffle migrate --f 1 --to 2 --network kasBaobab",
     "deploy:kasBaobab:kip17": "truffle migrate --f 3 --to 3 --network kasBaobab",
     "deploy:kasBaobab:kip37": "truffle migrate --f 4 --to 4 --network kasBaobab",
