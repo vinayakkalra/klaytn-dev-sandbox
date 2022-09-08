@@ -22,6 +22,7 @@
     "run:klaytn:log": "find -s ./network -name tee.*.log | tail -1 | xargs -I{} tail -f {}",
     "run:klaytn:cleanlog": "find -s ./network -name tee.*.log -delete",
     "test:ganache": "truffle test",
+    "test:ganache:kip7": "truffle test ./test/kip7Token.js",
     "test:klaytn": "truffle test --network klaytn",
     "test:baobab": "truffle test --network baobab",
     "deploy:klaytn": "truffle deploy --network klaytn",
