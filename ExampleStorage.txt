@@ -1,0 +1,5 @@
+A variable to store (x)
+A variable (count) to check the number of times a variable (x) value has been changed.
+An address variable that tells us what address was responsible for the latest change in the value of store variable (x)
+Create a mapping to store the latest changes done by an address
+Create and show tests
