@@ -12,7 +12,7 @@ const Project = artifacts.require("Project")
 contract("Factory", function (accounts) {
     
     let factory, token;
-
+    // set the initial values and get the deployed addresses
     beforeEach(async () => {
         // deploy factory and token
         factory = await Factory.deployed();
@@ -27,6 +27,11 @@ contract("Factory", function (accounts) {
         
     })
 
+    // Check all the initial set of rules are met 
+    // Check if the supply of the token is proper
+    // Check if the token address is set in the factory contract properly
+    // Check if the number of free tokens per project is set properly
+    // Check the balance of the contract for the token amount
     it("making the initial set of rules", async function () {
         var supply = await token.totalSupply()
         var tokenAddress = await factory.getTokenAddress();
@@ -48,6 +53,7 @@ contract("Factory", function (accounts) {
         
     });
 
+    // Check if tokens are sent to the project created using createProject
     it("Create a project and check if the tokens are sent to the contract", async function() {
         await factory.createProject(web3.utils.toWei('0.1'), web3.utils.toWei('10'), "hello"), {from: accounts[0]};
         var projectId = await factory.projects(0);
@@ -55,13 +61,7 @@ contract("Factory", function (accounts) {
         assert.equal(web3.utils.toWei('10000'), balance.toString());
     });
 
-    it("Create a project and check if the tokens are sent to the contract", async function() {
-        await factory.createProject(web3.utils.toWei('0.1'), web3.utils.toWei('10'), "hello"), {from: accounts[0]};
-        var projectId = await factory.projects(0);
-        var balance = await factory.getBalanceOfAccount(projectId);
-        assert.equal(web3.utils.toWei('10000'), balance.toString());
-    });
-
+    // Check if we can send below the minimum value to contribute in a project
     it("Contribute more than the minimum amount to the project", async function() {
         var projectId = await factory.projects(0);
         var projectInstance = await Project.at(projectId);
@@ -72,6 +72,7 @@ contract("Factory", function (accounts) {
         });
     });
     
+    // Contribute and check if the tokens are credetited to the user funding the contract
     it("Contribute and check if the tokens are creditied", async function() {
         var projectId = await factory.projects(0);
         var projectInstance = await Project.at(projectId);
@@ -82,6 +83,7 @@ contract("Factory", function (accounts) {
         assert.equal(bal.toString(), web3.utils.toWei('1'))
     });
 
+    // check for withdrawals
     it("Check withdrawal", async function() {
         var projectId = await factory.projects(0);
         var projectInstance = await Project.at(projectId);
