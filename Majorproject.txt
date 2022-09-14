@@ -1,0 +1,4 @@
+Problem Statement:
+
+To create a crowd funding contract where users can create projects and ask other users to fund their projects. 
+Also we can send a KIP7 token to all those who fund the Project (Optional).

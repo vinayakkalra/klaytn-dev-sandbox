@@ -3,8 +3,7 @@ pragma solidity ^0.8.0;
 
 import "@klaytn/contracts/KIP/token/KIP7/KIP7.sol";
 
-
-contract MyToken is KIP7 {
+contract Token is KIP7 {
     constructor(
         string memory name,
         string memory symbol,
