@@ -65,7 +65,7 @@ const KIP17 = ({ kip17 }: props) => {
       await initCaverIPFS()
       const cid = await caver.ipfs.add(Buffer.from(JSON.stringify(metadata)).buffer)
 
-      const uri = `https://ipfs.infura.io/ipfs/${cid}`
+      const uri = `https://ipfs.io/ipfs/${cid}`
       console.log('token URI: ', uri)
       try {
         const mintTxn = await kip17.methods
@@ -103,7 +103,7 @@ const KIP17 = ({ kip17 }: props) => {
         if (event && event.target && event.target.result != null) {
           const cid = await caver.ipfs.add(event.target.result)
 
-          const url = `https://ipfs.infura.io/ipfs/${cid}`
+          const url = `https://ipfs.io/ipfs/${cid}`
           console.log('ipfs url: ', url)
           setImageURL(url)
           setValue('image', url)
