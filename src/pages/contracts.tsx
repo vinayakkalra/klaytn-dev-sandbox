@@ -5,6 +5,7 @@ import path from 'path'
 import KIP7 from '../components/KIP7'
 import KIP17 from '../components/KIP17'
 import KIP37 from '../components/KIP37'
+import CrowdFunding from '../components/CrowdFunding'
 import providerContext from '../context/context'
 import { ToastContainer, toast } from 'react-toastify'
 
@@ -15,12 +16,16 @@ const Contracts: NextPage = ({
   kip17address,
   kip37abi,
   kip37address,
+  factoryaddress,
+  factoryabi,
+  projectabi
 }: any) => {
   const [currentContract, setCurrentContract] = useState('KIP7')
   const { web3, caver } = useContext(providerContext)
   const [kip7, setKip7] = useState()
   const [kip17, setKip17] = useState()
   const [kip37, setKip37] = useState()
+  const [factory, setFactory] = useState()
 
   const metamaskContractValidity = async () => {
     const code = await web3.eth.getCode(kip7address)
@@ -51,6 +56,10 @@ const Contracts: NextPage = ({
         const kip37Contract = new caver.klay.Contract(kip37abi, kip37address)
         setKip37(kip37Contract)
       }
+      if (factoryaddress && factoryabi) {
+        const factoryContract = new caver.klay.Contract(factoryabi, factoryaddress)
+        setFactory(factoryContract)
+      }
     }
   }
 
@@ -69,6 +78,10 @@ const Contracts: NextPage = ({
       if (kip37address && kip37abi) {
         const kip37Contract = new web3.eth.Contract(kip37abi, kip37address)
         setKip37(kip37Contract)
+      }
+      if (factoryaddress && factoryabi) {
+        const factoryContract = new web3.eth.Contract(factoryabi, factoryaddress)
+        setFactory(factoryContract)
       }
     }
     // else {
@@ -159,10 +172,30 @@ const Contracts: NextPage = ({
             KIP37
           </button>
         )}
+        {currentContract === 'funding' ? (
+          <button
+            className="border-b-2 border-white border-grey bg-gray-100 px-3 py-1 rounded-md"
+            onClick={() => {
+              setCurrentContract('funding')
+            }}
+          >
+            CrowdFunding
+          </button>
+        ) : (
+          <button
+            className="border-b-2 border-white px-3 py-1 hover:bg-gray-100 rounded-md"
+            onClick={() => {
+              setCurrentContract('funding')
+            }}
+          >
+            CrowdFunding
+          </button>
+        )}
       </div>
       <div className="mt-14">{currentContract === 'KIP7' && <KIP7 kip7={kip7} />}</div>
       <div className="mt-14">{currentContract === 'KIP17' && <KIP17 kip17={kip17} />}</div>
       <div className="mt-14">{currentContract === 'KIP37' && <KIP37 kip37={kip37} />}</div>
+      <div className="mt-14">{currentContract === 'funding' && <CrowdFunding factory={factory} projectabi={projectabi} />}</div>
     </div>
   )
 }
@@ -177,6 +210,9 @@ export async function getStaticProps() {
   let kip17abi
   let kip37address
   let kip37abi
+  let factoryaddress
+  let factoryabi
+  let projectabi
   let props = {}
 
   try {
@@ -208,6 +244,21 @@ export async function getStaticProps() {
     const kip37abiContents = await fs.readFile(kip37abiPath)
     kip37abi = JSON.parse(kip37abiContents.toString())
     props = { ...props, kip37address: kip37address, kip37abi: kip37abi }
+  } catch (err) {
+    console.log('error fetching ki317', err)
+  }
+
+  try {
+    const factoryaddressPath = path.join(contractsDirectory, 'factoryaddress')
+    factoryaddress = await fs.readFile(factoryaddressPath, 'utf8')
+    const factoryabiPath = path.join(contractsDirectory, 'factoryabi')
+    const factoryabiContents = await fs.readFile(factoryabiPath)
+    factoryabi = JSON.parse(factoryabiContents.toString())
+    const projectabiPath = path.join(contractsDirectory, 'projectabi')
+    const projectabiContents = await fs.readFile(projectabiPath)
+    projectabi = JSON.parse(projectabiContents.toString())
+    console.log({factoryaddress: factoryaddress, factoryabi: factoryabi, projectabi: projectabi})
+    props = { ...props, factoryaddress: factoryaddress, factoryabi: factoryabi, projectabi: projectabi }
   } catch (err) {
     console.log('error fetching ki317', err)
   }

@@ -26,6 +26,7 @@
     "test:ganache:fund": "truffle test ./test/factory.js",
     "test:klaytn": "truffle test --network klaytn",
     "test:baobab": "truffle test --network baobab",
+    "test:baobab:fund": "truffle test ./test/factory.js --network baobab",
     "deploy:klaytn": "truffle deploy --network klaytn",
     "deploy:baobab": "truffle deploy --network baobab",
     "deploy:cypress": "truffle deploy --network cypress",

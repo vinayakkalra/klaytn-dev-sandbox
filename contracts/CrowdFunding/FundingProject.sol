@@ -59,4 +59,10 @@ contract Project {
         klaybalance=0;
     }
 
+    // function to get all the data of this project 
+    // minimum, target, URI, total klay funded, owner
+    function getProjectData() public view returns(uint256, uint256, string memory, uint256, address){
+        return (minimumAmount, targetAmount, projectURI, totalklayfunded, owner);
+    }
+
 }

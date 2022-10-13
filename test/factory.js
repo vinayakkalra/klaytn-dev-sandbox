@@ -48,51 +48,51 @@ contract("Factory", function ( accounts ) {
 
   });
 
-  it("Check if a project is credited with token", async function () {
-    await factory.createProject(web3.utils.toWei('0.1'), web3.utils.toWei('10'), "project URI");
-    var projectId = await factory.projects(0);
-    var balance = await factory.getTokenBalanceOfAddress(projectId);
-    assert.equal('1000', web3.utils.fromWei(balance));
+  // it("Check if a project is credited with token", async function () {
+  //   await factory.createProject(web3.utils.toWei('0.1'), web3.utils.toWei('10'), "project URI");
+  //   var projectId = await factory.projects(0);
+  //   var balance = await factory.getTokenBalanceOfAddress(projectId);
+  //   assert.equal('1000', web3.utils.fromWei(balance));
 
-  });
+  // });
 
-  it("Check if we can contribute to the project with lesser than minimum value", async function () {
-    var projectId = await factory.projects(0);
-    var project = await Project.at(projectId);
-    project.contribute({from: accounts[1], value: web3.utils.toWei('0.01')}).catch((e)=>{
-      assert(true);
-    })
-  });
+  // it("Check if we can contribute to the project with lesser than minimum value", async function () {
+  //   var projectId = await factory.projects(0);
+  //   var project = await Project.at(projectId);
+  //   project.contribute({from: accounts[1], value: web3.utils.toWei('0.01')}).catch((e)=>{
+  //     assert(true);
+  //   })
+  // });
 
-  it("Check if we can contribute to the project and send tokens", async function () {
-    var projectId = await factory.projects(0);
-    var project = await Project.at(projectId);
-    await project.contribute({from: accounts[1], value: web3.utils.toWei('1')})
+  // it("Check if we can contribute to the project and send tokens", async function () {
+  //   var projectId = await factory.projects(0);
+  //   var project = await Project.at(projectId);
+  //   await project.contribute({from: accounts[1], value: web3.utils.toWei('1')})
 
-    var balance = await factory.getTokenBalanceOfAddress(accounts[1]);
-    assert.equal(web3.utils.fromWei(balance), '1')
+  //   var balance = await factory.getTokenBalanceOfAddress(accounts[1]);
+  //   assert.equal(web3.utils.fromWei(balance), '1')
 
-  });
+  // });
 
-  // check withdrawal
-  it("check withdrawal", async function() {
+  // // check withdrawal
+  // it("check withdrawal", async function() {
 
-    // check if only the owner is able to call this function
-    var projectId = await factory.projects(0);
-    var project = await Project.at(projectId);
-    project.withdraw({from:accounts[1]}).catch((e)=>{
-      assert(true)
-    })
-    var initialbalance = await web3.eth.getBalance(accounts[0]);
-    await project.withdraw({from:accounts[0]})
-    var finalbalance = await web3.eth.getBalance(accounts[0])
-    console.log('initialbalance', initialbalance)
-    console.log('finalbalance', finalbalance)
-    assert(Number(web3.utils.fromWei(finalbalance)) > Number(web3.utils.fromWei(initialbalance)));
-    // Oracles, yield protocols, proxy contracts/upgradable contracts
+  //   // check if only the owner is able to call this function
+  //   var projectId = await factory.projects(0);
+  //   var project = await Project.at(projectId);
+  //   project.withdraw({from:accounts[1]}).catch((e)=>{
+  //     assert(true)
+  //   })
+  //   var initialbalance = await web3.eth.getBalance(accounts[0]);
+  //   await project.withdraw({from:accounts[0]})
+  //   var finalbalance = await web3.eth.getBalance(accounts[0])
+  //   console.log('initialbalance', initialbalance)
+  //   console.log('finalbalance', finalbalance)
+  //   assert(Number(web3.utils.fromWei(finalbalance)) > Number(web3.utils.fromWei(initialbalance)));
+  //   // Oracles, yield protocols, proxy contracts/upgradable contracts
 
 
-  });
+  // });
 
 
 });
